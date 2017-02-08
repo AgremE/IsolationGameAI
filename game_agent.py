@@ -94,7 +94,7 @@ class CustomPlayer:
         positive value large enough to allow the function to return before the
         timer expires.
     """
-    MAX_DEPTH = 25
+    MAX_DEPTH = 1
 
     def __init__(self, search_depth=3, score_fn=custom_score,
                  iterative=True, method='minimax', timeout=5.):
@@ -150,11 +150,11 @@ class CustomPlayer:
         # move from the game board (i.e., an opening book), or returning
         # immediately if there are no legal moves
         
-        if not legal_moves:
+        #if not legal_moves:
             # Return immediately if there are no legal moves
-            return (-1,-1)
-        elif game.move_count == 0:
-            return (3,3)
+        #    return (-1,-1)
+        #elif game.move_count == 0:
+        #    return (3,3)
             # Remove the reflected action
         # Use depth for iterative depeening
         try:
@@ -185,18 +185,15 @@ class CustomPlayer:
                 # if Iterative deepeening is not set to use
                 if (self.method == "minimax"):
                     #sprint("MiniMax")
-
-                    best_action = self.minimax(game, MAX_DEPTH)[1]
-
+                    best_action = self.minimax(game, 1)[1]
                 elif (self.method == "alphabeta"):
-
-                    best_action = self.alphabeta(game, MAX_DEPTH)[1]
-                
+                    best_action = self.alphabeta(game, 1)[1]
         except Timeout:
             # Handle any actions required at timeout, if necessary
             #pass
-            return best_action
             #print("You are out of time. Your agent forfeits the game")
+            return best_action
+            
         return best_action
 
         # Return the best move from the last completed search iteration
@@ -264,16 +261,17 @@ class CustomPlayer:
         Minimax algorithm implementation
         """
 
-        if self.time_left() < self.TIMER_THRESHOLD:
-            raise Timeout()
-            
         
+        
+        if self.time_left() < (self.TIMER_THRESHOLD ):
+            raise Timeout()  
 
         if(maximizing_player):
             try:
                 list_move = game.get_legal_moves(game.active_player)
                 if (depth == 0 or (not list_move)):
                     return (self.score(game,game.active_player), (-1, -1))
+
                 best_max = float("-inf")
                 action_max = None
                 for action in list_move:
@@ -285,6 +283,7 @@ class CustomPlayer:
                         #print(action_max)
             except Timeout:
                 return (best_max,action_max)
+
             return (best_max,action_max)
 
         else:
@@ -293,13 +292,17 @@ class CustomPlayer:
                 list_move = game.get_legal_moves(game.active_player)
                 best_min = float("inf")
                 action_min = None
+
                 if (depth == 0 or (not list_move)):
                     return (self.score(game,game.inactive_player), (-1, -1))
+
                 for action in list_move:
-                        current_min = self.minimax(game.forecast_move(action),depth-1,True)[0]
-                        if(best_min > current_min):
-                            best_min = current_min
-                            action_min = action
+
+                    current_min = self.minimax(game.forecast_move(action),depth-1,True)[0]
+                    if(best_min > current_min):
+                        best_min = current_min
+                        action_min = action
+
             except Timeout:
                 return (best_min,action_min)
 
