@@ -56,11 +56,13 @@ def custom_score(game, player):
     # First option for evaluation function: my_move - 1.3*my_opponent_move
     #return len(game.get_legal_move(player))-1.3*len(game.get_legal_moves(game.get_opponent(player)))
     # Second option for evaluation function: my_move - 1.5*my_opponent_move
-    value = len(game.get_legal_moves(player))-1.5*len(game.get_legal_moves(game.get_opponent(player)))
+    return len(game.get_legal_moves(player))-1.3*len(game.get_legal_moves(game.get_opponent(player)))
     #print (value)
-    return value
+    #return len(game.get_legal_moves(player))
+    #return 1.
+    #return value
     # Third option for evaluation function: my_move - 2*my_opponent_move
-    #return len(game.get_legal_move(player))-2*len(game.get_legal_moves(game.get_opponent(player)))
+    #return len(game.get_legal_moves(player))-len(game.get_legal_moves(game.get_opponent(player)))
 
     #raise NotImplementedError
 
