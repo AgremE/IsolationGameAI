@@ -367,6 +367,8 @@ class CustomPlayer:
         if(maximizing_player):
             # Maximum selection layer
             action_max = None
+            best_max = float("-inf")
+            current_max = float("-inf")
 
             if (depth == 0 or (not list_move)):
                 return (self.score(game,game.active_player), (-1, -1))
@@ -378,34 +380,37 @@ class CustomPlayer:
                 current_max = self.alphabeta(game.forecast_move(action),depth-1,alpha,beta,False)[0];
                 #print(action)
                 #print(current_max)
-                if (alpha < current_max):
+                if (best_max < current_max):
                     #print("Assigning Alpha")
-                    alpha = current_max
+                    best_max = current_max
                     action_max = action
-                if (alpha >= beta):
+                if (current_max >= beta):
                     #print("Break at max")
-                    break
+                    return (current_max,action)
+                alpha = max(alpha, current_max)
 
-            return (alpha,action_max)
+            return (best_max,action_max)
 
         else:
             # Minimum selection layer
             #best_min = float("inf")
             action_min = None
-
+            best_min = float("inf")
+            current_min = float("inf")
             if (depth == 0 or (not list_move)):
                 return (self.score(game,game.inactive_player), (-1, -1))
 
             for action in list_move:
                 # The same as above loop
                 current_min = self.alphabeta(game.forecast_move(action),depth-1,alpha,beta,True)[0]
-                if(beta > current_min):
+                if(best_min > current_min):
                     #print("Assiging Beta")
-                    beta = current_min
+                    best_min = current_min
                     action_min = action
-                if (alpha >= beta):
+                if (current_min <= alpha):
                     #print("Break at min")
-                    break
-            return (beta,action_min)
+                    return (current_min,action)
+                beta = min(beta,current_min)
+            return (best_min,action_min)
 
         #raise NotImplementedError
